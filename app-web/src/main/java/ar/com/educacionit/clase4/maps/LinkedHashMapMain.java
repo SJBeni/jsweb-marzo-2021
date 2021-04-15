@@ -1,7 +1,5 @@
 package ar.com.educacionit.clase4.maps;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
 import java.util.TreeMap;
 
 import ar.com.educacionit.clase2.Auto;
