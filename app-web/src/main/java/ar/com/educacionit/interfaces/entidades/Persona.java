@@ -64,11 +64,9 @@ public class Persona {
 		for(IIdioma idiomaQueSabe : this.idiomas) {
 			if(idiomaQueSabe.equals(origen)) {
 				sabeIdiomaOrigen = true;
-				break;
 			}
 			if(idiomaQueSabe.equals(destino)) {
 				sabeIdiomaDestino = true;
-				break;
 			}
 		}
 		if(sabeIdiomaDestino) {

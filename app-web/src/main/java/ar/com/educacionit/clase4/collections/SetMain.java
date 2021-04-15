@@ -5,7 +5,7 @@ import java.util.HashSet;
 public class SetMain {
 
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
+
 		//creacion
 		HashSet <Integer> edades = new HashSet<>();
 		
@@ -45,7 +45,14 @@ public class SetMain {
 		System.out.println("30 " + (elimino ? "se ha eliminado" : "no se ha eliminado"));
 		
 		
+		//verificamos el cambio en la dimension
+		System.out.println("Hay " + edades.size() + " edades");
 		
+		//vaciar el set
+		edades.clear();
+		
+		//verificamos el cambio en la dimension
+		System.out.println("Hay " + edades.size() + " edades");
 		
 		//Final
 		System.out.println("Fin");

@@ -17,7 +17,7 @@ public class MainIdiomas {
 		carlos.decir("hola");
 		
 		IIdioma ingles = new Ingles();
-		//carlos.aprender(ingles);
+		carlos.aprender(ingles);
 		
 		
 		try {

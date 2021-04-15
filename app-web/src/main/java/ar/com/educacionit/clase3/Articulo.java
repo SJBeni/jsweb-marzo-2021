@@ -2,7 +2,7 @@ package ar.com.educacionit.clase3;
 
 import java.util.Arrays;
 
-public class Articulo {
+public class Articulo implements Comparable<Articulo>{
 	
 	public final String nombre = "ARTICULO";
 	
@@ -119,4 +119,25 @@ public class Articulo {
 	public boolean tieneImagenesExtras() {
 		return this.imagenesExtras.length > 0;
 	}
+
+	@Override
+	//este metodo retorna 0, <0 , >0
+	//retorna >0 --->implica que esteArticulo es mayor que otroArticulo
+	//retorna = 0 --->implica que esteArticulo es igual a otroArticulo
+	//retorna <0 ---> implica que esteArticulo es menor a otroArticulo
+	public int compareTo(Articulo otroArticulo) {
+		//comparacion que me va a dar el orden en la coleccion
+		
+		Articulo esteArticulo = this;
+		return esteArticulo.getPrecio().compareTo(otroArticulo.getPrecio());
+	}
+
+	@Override
+	public String toString() {
+		return "Articulo [titulo=" + titulo + ", autor=" + autor + ", precio=" + precio + "]";
+	}
+	
+	
+	
+	
 }
