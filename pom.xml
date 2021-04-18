@@ -7,6 +7,9 @@
   <name>proyecto padre</name>
   <modules>
   	<module>app-web</module>
+  	<module>app-domain</module>
+  	<module>app-dao</module>
+  	<module>app-web1</module>
   </modules>
   
   <!-- atributos comunes a los modulo -->
