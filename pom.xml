@@ -10,6 +10,7 @@
   	<module>app-domain</module>
   	<module>app-dao</module>
   	<module>app-web1</module>
+  	<module>app-services</module>
   </modules>
   
   <!-- atributos comunes a los modulo -->

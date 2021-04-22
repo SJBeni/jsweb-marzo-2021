@@ -27,7 +27,7 @@ public class ProductoDAOJdbcImpl implements ProductoDAO {
 		String sqlSelect = "select * from productos";//armamos la sentencia sql correspondiente a select
 		
 		try {
-			Statement statement = connection.createStatement();// creacion de un statement
+			PreparedStatement statement = connection.prepareStatement(sqlSelect);// creacion de un statement
 
 			ResultSet resultSet = statement.executeQuery(sqlSelect);// ahora debemos simular la ejecucion de la
 																	// sentencia pulsando el boton derecho
@@ -58,13 +58,12 @@ public class ProductoDAOJdbcImpl implements ProductoDAO {
 	public Producto getById(Long idProducto) throws GenericException {
 		
 		Connection connection = AdministradorDeConexiones.obtenerConexion();
+		String sqlSelect = "select * from productos where id = " + idProducto;// armamos la sentencia sql
 		
 		try {
-			String sqlSelect = "select * from productos where id = " + idProducto;// armamos la sentencia sql
-																					// correspondiente a select
 
-			Statement statement = connection.createStatement();// creacion de un statement
-
+			PreparedStatement statement = connection.prepareStatement(sqlSelect);// creacion de un statement
+			//statement.setLong(1, idProducto);
 			ResultSet resultSet = statement.executeQuery(sqlSelect);// ResulSet devuelve una coleccion con los registros
 																	// recuperados, se debe recorrer
 
@@ -95,8 +94,8 @@ public class ProductoDAOJdbcImpl implements ProductoDAO {
 		String sqlSelect = "select * from productos where codigo = '" + codigoProducto + "'";//armamos la sentencia sql correspondiente a select
 		
 		try {
-			Statement statement = connection.createStatement();//creacion de un statement
-			
+			PreparedStatement statement = connection.prepareStatement(sqlSelect);//creacion de un statement
+			//statement.setString(3,codigoProducto);
 			ResultSet resultSet = statement.executeQuery(sqlSelect);//ResulSet devuelve una coleccion con los registros recuperados, se debe recorrer
 			
 			Producto producto = null;
@@ -119,7 +118,6 @@ public class ProductoDAOJdbcImpl implements ProductoDAO {
 		}
 	}
 
-	
 	public Producto update(Producto producto ) throws GenericException{
 		
 		Producto productoBuscador = this.getById(producto.getId());
@@ -131,15 +129,26 @@ public class ProductoDAOJdbcImpl implements ProductoDAO {
 		}
 		
 		//armamos la sentencia sql correspondiente a update
-		String sqlSelect = "Update productos " 
+		/*String sqlSelect = "Update productos " 
 							+ "set titulo = '" + producto.getTitulo() + "' ,"
 							+ "precio = '" + producto.getPrecio() + "' ,"
 							+ "id_tipo_producto = '" + producto.getTipoProducto() + "'"
-							+ "where id = '" + producto.getId() + "'";
+							+ "where id = '" + producto.getId() + "'";*/
+		String sqlSelect = "UPDATE productos " 
+							+ " set titulo = ? ,"
+							+ " precio = ? ," 
+							+ " id_tipo_producto = ?" 
+							+ " WHERE id = ?";
 		try {		
-			Statement statement = connection.createStatement();
+			PreparedStatement statement = connection.prepareStatement(sqlSelect);
+			
+			statement.setString(1, producto.getTitulo());
+			statement.setFloat(2, producto.getPrecio());
+			statement.setLong(3, producto.getTipoProducto());
+			statement.setLong(4, producto.getId());
+			
 					
-			int updated = statement.executeUpdate(sqlSelect);
+			int updated = statement.executeUpdate();
 				
 			statement.close();	//cerramos el statement
 			
@@ -150,7 +159,7 @@ public class ProductoDAOJdbcImpl implements ProductoDAO {
 			producto = this.getById(producto.getId());
 					
 			return producto;	//retornamos la coleccion como indica el metodo	
-		}catch (SQLException e) {
+		}catch (Exception e) {
 			throw new GenericException ("No se ha podido actualizar el producto",e);
 		} finally {
 			try {
@@ -161,7 +170,6 @@ public class ProductoDAOJdbcImpl implements ProductoDAO {
 		}
 	}
 	
-	
 	public Producto deleteById(Long id) throws GenericException{
 		
 		Producto producto = this.getById(id);
@@ -171,11 +179,13 @@ public class ProductoDAOJdbcImpl implements ProductoDAO {
 			throw new GenericException("No existe el producto id: "+ id,null);
 		}
 		
-		String sql="DELETE FROM PRODUCTOS WHERE ID =" + id;
+		String sql="DELETE FROM PRODUCTOS WHERE ID = ?";
 		
 		try {
-			Statement statement = connection.createStatement();
-			int deleted = statement.executeUpdate(sql);
+			PreparedStatement statement = connection.prepareStatement(sql);
+			statement.setLong(1,id);
+			
+			int deleted = statement.executeUpdate();
 			
 			statement.close();
 			
@@ -196,7 +206,6 @@ public class ProductoDAOJdbcImpl implements ProductoDAO {
 		return producto;
 	}
 	
-	
 	public Producto deleteByCodigo(String codigo) throws GenericException{
 		
 		Producto producto = this.getByCodigo(codigo);
@@ -206,11 +215,13 @@ public class ProductoDAOJdbcImpl implements ProductoDAO {
 			throw new GenericException("No existe el producto codigo: "+ codigo,null);
 		}
 		
-		String sql="DELETE FROM PRODUCTOS WHERE CODIGO =" + codigo;
+		String sql="DELETE FROM PRODUCTOS WHERE CODIGO = ?";
 		
 		try {
-			Statement statement = connection.createStatement();
-			int deleted = statement.executeUpdate(sql);
+			PreparedStatement statement = connection.prepareStatement(sql);
+			statement.setString(1,codigo);
+			
+			int deleted = statement.executeUpdate();
 			
 			statement.close();
 			
@@ -231,15 +242,19 @@ public class ProductoDAOJdbcImpl implements ProductoDAO {
 		return producto;
 	}
 
-	
 	public Producto create(Producto producto) throws DuplicatedException, GenericException{
 		
 		Connection connection = AdministradorDeConexiones.obtenerConexion();
-		String sql = "INSERT INTO productos (titulo,precio,codigo, id_tipo_producto) "
-		+ "VALUES ('" + producto.getTitulo() + "' , '" + producto.getPrecio() + "','" + producto.getCodigo() + "','" + producto.getTipoProducto() + "')";
-		
+		//String sql = "INSERT INTO productos (titulo,precio,codigo, id_tipo_producto) "
+		//+ "VALUES ('" + producto.getTitulo() + "' , '" + producto.getPrecio() + "','" + producto.getCodigo() + "','" + producto.getTipoProducto() + "')";
+		String sql ="INSERT INTO productos (titulo,precio,codigo, id_tipo_producto) " + "VALUES (?,?,?,?)";
 		try {
 			PreparedStatement statement = connection.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
+			statement.setString(1, producto.getTitulo());
+			statement.setFloat(2, producto.getPrecio());
+			statement.setString(3, producto.getCodigo());
+			statement.setLong(4, producto.getTipoProducto());
+			
 			statement.execute();
 
 			ResultSet resultSet = statement.getGeneratedKeys();
@@ -284,6 +299,37 @@ public class ProductoDAOJdbcImpl implements ProductoDAO {
 
 	@Override
 	public Collection<Producto> findAllByTitulo(String titulo) throws GenericException {
-		return this.findAll();
+		
+		Collection<Producto> productos = new ArrayList<Producto>();// Defino una coleccion para la devolucion del
+		// metodo
+		Connection connection = AdministradorDeConexiones.obtenerConexion();
+		
+		String sqlSelect = "select * from productos where upper(titulo) like '%" + titulo +"% '";//armamos la sentencia sql correspondiente a select
+		
+		try {
+			PreparedStatement statement = connection.prepareStatement(sqlSelect);// creacion de un statement
+			//setear los parametros
+			//8statement.setString(1, titulo);
+			ResultSet resultSet = statement.executeQuery();// ahora debemos simular la ejecucion de la
+																	// sentencia pulsando el boton derecho
+																	// ResulSet devuelve una coleccion con los registros
+																	// recuperados, se debe recorrer
+			while (resultSet.next()) { // para varios registros
+				Producto producto = productoFromResultSet(resultSet);
+				productos.add(producto);// cargamos el producto generado con los registros dentro de la coleccion
+			}
+
+			statement.close(); // cerramos el statement
+			return productos;	//retornamos la coleccion como indica el metodo
+		} catch (SQLException e) {
+			throw new GenericException ("No se ha podido crear el producto",e);
+		}finally {
+			try {
+				connection.close();
+			}catch(SQLException e1) {
+				throw new GenericException("Problema cerrando la conexion, verifique en la base de datos",e1);
+			}
+		}
+		
 	}
 }

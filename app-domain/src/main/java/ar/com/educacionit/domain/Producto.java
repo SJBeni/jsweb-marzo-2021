@@ -1,6 +1,7 @@
 package ar.com.educacionit.domain;
 
 public class Producto {
+	//comentario para actualizar nada mas
 	
 	//atributos
 	private Long id;
