@@ -28,6 +28,10 @@ public class Producto {
 	}
 
 	
+	public Producto() {
+		// TODO Auto-generated constructor stub
+	}
+
 	//metodos getters y setters
 	public Long getId() {
 		return id;
@@ -75,5 +79,7 @@ public class Producto {
 				+ ", tipoProducto=" + tipoProducto + "]";
 	}
 
-	
+	public String toCSV() {
+		return titulo + ";" + precio + ";" + codigo + ";" + tipoProducto;
+	}
 }
