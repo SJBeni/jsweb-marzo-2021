@@ -26,7 +26,7 @@ public class NuevoProductoServlet extends HttpServlet {
 		Float precioF = Float.parseFloat(precio);
 		Long tipoProductoL = Long.parseLong(tipoProducto);
 		
-		Producto nuevoProducto = new Producto(titulo,precioF,codigo,tipoProductoL);
+		Producto nuevoProducto = new Producto(titulo, precioF, codigo, tipoProductoL);
 		ProductoServices ps = new ProductoServicesImpl();
 		
 		String target;
